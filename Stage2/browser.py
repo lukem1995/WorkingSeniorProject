@@ -49,7 +49,7 @@ class Browser():
 			self.openDomain()
 
 	#Returns the domain being used
-	def getDomain(self):
+	def getDomainName(self):
 		return self.fullDomain
 
 	#Checks for sitemap on chosen domain and if present writes to file
@@ -82,7 +82,7 @@ class Browser():
 		#print url
 		try:
 			#print url
-			self.browser.open(url)
+			self.browser.open(url,timeout=4)
 			return True
 		except:
 			return False
