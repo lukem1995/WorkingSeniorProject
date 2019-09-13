@@ -16,6 +16,7 @@ class Browser():
 		self.siteMapUrl = None
 		self.domainSession = None
 		self.sitemapFile = "mySitemap.xml"
+		self.htmlFile = "myHTML.html"
 
 	#Returns Cookies
 	def getCookies(self):
@@ -47,6 +48,9 @@ class Browser():
 			self.fullDomain = "http://" + self.fullDomain
 			self.openDomain()
 
+	#Returns the domain being used
+	def getDomain(self):
+		return self.fullDomain
 
 	#Checks for sitemap on chosen domain and if present writes to file
 	def checkSitemap(self):		
@@ -67,10 +71,11 @@ class Browser():
                                 	siteMap.write(mySitemap)
 					return True
 			except:
-                		with open("myHTML.html","w+") as htmlFile:
+                		with open(self.htmlFile,"w+") as htmlFile:
                         		htmlFile.write(self.domainSession.read())
                         		htmlFile.close()
-                		print "Saved HTML to myHTML.html"
+				print "No sitemap found"
+                		print "Saved HTML to " + self.htmlFile
 				return False
 	
 	def checkLink(self,url):
