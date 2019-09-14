@@ -5,96 +5,161 @@ from htmlGetter import HTMLGetter
 from htmlParser import HTMLParser
 
 
-myBrowser = Browser()
-myXmlParser = XmlParser()
-myHtmlGetter = HTMLGetter()
-myHtmlParser = HTMLParser()
-xmlFile = None
-goodLinks = []
-links = None
-myDomainName = None
-myHtmlFile = None
+#myBrowser = Browser()
+#myXmlParser = XmlParser()
+#myHtmlGetter = HTMLGetter()
+#myHtmlParser = HTMLParser()
+#xmlFile = None
+#goodLinks = []
+#links = None
+#myDomainName = None
+#myHtmlFile = None
+#shortDomain = None
+#replace = ["https://","http://","www."]
+#matchedDomains = []
 
-#Gets domain from user and sets it to a variable
-myBrowser.setDomain()
-myDomainName = myBrowser.getDomainName()
+#Modified from code at https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
+        #(Change is that mine works on a list of strings instead of just one string)
+#Removes list of strings from list of strings, modyfying the list
+def replaceMultipleList(mainStringList, newString):
+	toReplace = ["https://","http://","www."]
+        count = 0
+        for i in mainStringList:
+                for j in toReplace:
+                	if str(j) in str(i):
+                                mainStringList[count] = mainStringList[count].replace(j, newString)
+                count = count + 1
+	return mainStringList
 
+#Copied from https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
+#Removes list of strings from string
+def replaceMultiple(mainString, newString):
+        toReplace = ["https://","http://","www."]
+	count = 0
+        for elem in toReplace:
+                if elem in mainString:
+                        mainString = mainString.replace(elem, newString)
+        return mainString
+
+
+#Gets domain from user and sets varaibles
+def start():
+	global myBrowser
+        myBrowser.setDomain()
+        domainName = myBrowser.getDomainName()
+        shortDomainName = replaceMultiple(domainName,"")
+	return domainName, shortDomainName;
+
+def isSitemap(myLinks,myDomain):
+	global myBrowser
+	global myXmlParser
+	global myHtmlGetter
+	global myHtmlParser
 #Checks for sitemap
 #If sitemap found, gets links from <loc> tags and saves to list
 #If sitemap not found, gets HTML from domain index and saves to file 
-if myBrowser.checkSitemap() == True:
-	myXmlParser.setFile(myBrowser.sitemapFile)
-	myXmlParser.setLinks()
-	links = myXmlParser.getLinks()
-	#Runs if sitemap exists but parsing returns no links
-	if len(links) == 0:
-		print "Sitemap is in a bad format"
-		myDomain = myHtmlGetter.getHTML(myDomain)
-        	with open(myHtmlGetter.getFileName(), "r") as file:
-                	myHtmlFile = file.read()
-                	file.close()
-        	myHtmlParser.setFile(myHtmlFile)
-        	myHtmlParser.setLinks()
-        	links = myHtmlParser.getLinks()
-#Runs if no sitemap found
-else:
-	myHtmlGetter.getHTML(myDomainName)
-	with open(myHtmlGetter.getFileName(), "r") as file:
-        	myHtmlFile = file.read()
-        	file.close()
-	myHtmlParser.setFile(myHtmlFile)
-	myHtmlParser.setLinks()
-	links = myHtmlParser.getLinks()
+	if myBrowser.checkSitemap() == True:
+		myXmlParser.setFile(myBrowser.sitemapFile)
+		myXmlParser.setLinks()
+		myLinks = myXmlParser.getLinks()
+		#Runs if sitemap exists but parsing returns no links
+		if len(myLinks) == 0:
+			print "Sitemap is in a bad format"
+			myHtmlGetter.getHTML(myDomainName)
+        		with open(myHtmlGetter.getFileName(), "r") as file:
+               	 		myHtmlFile = file.read()
+                		file.close()
+        		myHtmlParser.setFile(myHtmlFile)
+        		myHtmlParser.setLinks()
+        		myLinks = myHtmlParser.getLinks()
+			return myLinks
+		return myLinks
+	#Runs if no sitemap found
+	else:
+		myHtmlGetter.getHTML(myDomain)
+		with open(myHtmlGetter.getFileName(), "r") as file:
+        		myHtmlFile = file.read()
+        		file.close()
+		myHtmlParser.setFile(myHtmlFile)
+		myHtmlParser.setLinks()
+		myLinks = myHtmlParser.getLinks()
+		return myLinks
 
 #Prints all links in the links list
-def showLinks():
-	count = 0
-	for i in links:
-		print str(links[count])
-		count = count + 1
-		#print type(count)
+def showLinks(myLinks):
+	for i in myLinks:
+		print str(i)
 
-def cleanLinks():
-	count = 0
-	for i in links:
-		print str(links[count])[0]
-		if str(links[count])[0] == "/":
-			links[count] = str(myDomainName) + str(links[count])
-			print links[count]
+def isDomain(myLinks,myDomain):
+	matchedLinks = []
+	myLinks = replaceMultipleList(myLinks,"")
+	for i in myLinks:
+		if str(i).startswith(myDomain):
+			matchedLinks.append(str(i))
+	return matchedLinks
 
-		elif str(links[count]) == "#":
-			links[count] = str(myDomainName)
-			print links[count]
-		else:
-			print str(links[count])
+def cleanLinks(myLinks,myDomain):
+	count = 0
+	for i in myLinks:
+		if str(myLinks[count])[0] == "/":
+			myLinks[count] = str(myDomain) + str(myLinks[count])
+
+		elif str(myLinks[count]) == "#":
+			myLinks[count] = str(myDomain)
 		count = count + 1
+	return myLinks,myDomain;
+
+#From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
+#Removes dupicates from list
+def rmDup(myList):
+	myList = list(dict.fromkeys(myList))
+	return myList
 
 #Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
-def checkLinks():
+def checkLinks(myLinks):
+	global myBrowser
 	count = 0
+	goodLinks = []
 	with open("GoodLinks.txt","w+") as glFile:
 		glFile.close()
-		for i in links:
-			if myBrowser.checkLink(links[count]) == True:
-				if links[count] in goodLinks:
-					print str(links[count]) + " is a duplicate"
-                                	print str(count + 1) +  "/" + str(len(links))
+	for i in myLinks:
+		if myBrowser.checkLink(i) == True:
+			with open("GoodLinks.txt","a") as glFile:
+                        	glFile.write(i + "\n")
+                        	glFile.close()
+			goodLinks.append(i)
+			print str(i) + " is good" 
+			print str(count + 1) +  "/" + str(len(myLinks))
+		else:
+			print str(i) + " is bad"
+			print str(count + 1) + "/" + str(len(myLinks))
+		count = count + 1
+		time.sleep(1)
+	return goodLinks
 
-				else:
-					with open("GoodLinks.txt","a") as glFile:
-                                        	glFile.write(links[count] + "\n")
-                                        	glFile.close()
-					goodLinks.append(links[count])
-					print str(links[count]) + " is good" 
-					print str(count + 1) +  "/" + str(len(links))
-			else:
-				print str(links[count]) + " is bad"
-				print str(count + 1) + "/" + str(len(links))
-			count = count + 1
-			time.sleep(1)
+#Main
+def main():
+	global myBrowser
+	myBrowser = Browser()
+	global myXmlParser
+	myXmlParser = XmlParser()
+	global myHtmlGetter
+	myHtmlGetter = HTMLGetter()
+	global myHtmlParser
+	myHtmlParser = HTMLParser()
 
-#showLinks()
-cleanLinks()
-checkLinks()
-#print len(links)
-#print myBrowser.fullDomain
+	myDomainName = None
+	shortDomain = None
+	matchedDomains = []
+	validLinks = []
+	links = []
+
+	myDomainName, shortDomain = start()
+	links = isSitemap(links,myDomainName)
+	links, myDomainName = cleanLinks(links,myDomainName)
+	matchedDomains = isDomain(links,shortDomain)
+	matchedDomains = rmDup(matchedDomains)
+	validLinks = checkLinks(matchedDomains)
+
+if __name__ == "__main__":
+	main()

@@ -24,9 +24,9 @@ class Browser():
                 for cookie in self.cookiejar:
                         cookiename = cookie.name
                         cookievalue = cookie.value
-                        if count == 0: 
+                        if count == 0:
                                 fullcookies = cookiename + "=" + cookievalue
-                        else: 
+                        else:
                                 fullcookies = fullcookies + ";" + cookiename + "=" + cookievalue
                         count = count + 1
                 return fullcookies
@@ -35,14 +35,15 @@ class Browser():
 	def openDomain(self):
 		try:
 			self.domainSession = self.browser.open(self.fullDomain)
-		except: 
+		except:
+			print self.fullDomain
 			print "Bad domain. Try again"
-                        self.setDomain()
+			self.setDomain()
 
         #Get target domain from user
         def setDomain(self):
                 self.fullDomain = raw_input("Enter the desired domain: ")
-		if "http://" in self.fullDomain or "https://" in self.fullDomain:
+		if self.fullDomain.startswith("http://") or self.fullDomain.startswith("https://"):
 			self.openDomain()
 		else:
 			self.fullDomain = "http://" + self.fullDomain
@@ -75,7 +76,7 @@ class Browser():
                         		htmlFile.write(self.domainSession.read())
                         		htmlFile.close()
 				print "No sitemap found"
-                		print "Saved HTML to " + self.htmlFile
+                		#print "Saved HTML to " + self.htmlFile
 				return False
 	
 	def checkLink(self,url):
