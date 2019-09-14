@@ -2,6 +2,7 @@
 
 import mechanize
 import cookielib
+import time
 
 class HTMLGetter():
 
@@ -15,11 +16,13 @@ class HTMLGetter():
 
 	def getHTML(self, url):
 		self.domain = url
-		html = self.browser.open(url)
-		with open(self.fileName,"w+") as htmlFile:
-			htmlFile.write(html.read())
-			htmlFile.close()
-		print "Saved HTML to " + self.fileName
-
+		try:
+			html = self.browser.open(url)
+			with open(self.fileName,"w+") as htmlFile:
+				htmlFile.write(html.read())
+				htmlFile.close()
+		except:
+			None
+		#time.sleep(5)
 	def getFileName(self):
 		return self.fileName

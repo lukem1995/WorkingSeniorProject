@@ -1,4 +1,8 @@
 import time
+import sys
+reload(sys)
+sys.setdefaultencoding("utf8")
+sys.setrecursionlimit(1000000)
 from browser import Browser
 from xmlParser import XmlParser
 from htmlGetter import HTMLGetter
@@ -50,11 +54,10 @@ def start():
         shortDomainName = replaceMultiple(domainName,"")
 	return domainName, shortDomainName;
 
-def isSitemap(myLinks,myDomain):
+def isSitemap(myDomain):
 	global myBrowser
 	global myXmlParser
-	global myHtmlGetter
-	global myHtmlParser
+	myLinks = None
 #Checks for sitemap
 #If sitemap found, gets links from <loc> tags and saves to list
 #If sitemap not found, gets HTML from domain index and saves to file 
@@ -65,25 +68,46 @@ def isSitemap(myLinks,myDomain):
 		#Runs if sitemap exists but parsing returns no links
 		if len(myLinks) == 0:
 			print "Sitemap is in a bad format"
-			myHtmlGetter.getHTML(myDomainName)
-        		with open(myHtmlGetter.getFileName(), "r") as file:
-               	 		myHtmlFile = file.read()
-                		file.close()
-        		myHtmlParser.setFile(myHtmlFile)
-        		myHtmlParser.setLinks()
-        		myLinks = myHtmlParser.getLinks()
-			return myLinks
-		return myLinks
+			myLinks = noSitemap(myDomain,myDomain)
+			return myLinks;
+		return myLinks;
 	#Runs if no sitemap found
 	else:
-		myHtmlGetter.getHTML(myDomain)
-		with open(myHtmlGetter.getFileName(), "r") as file:
-        		myHtmlFile = file.read()
-        		file.close()
-		myHtmlParser.setFile(myHtmlFile)
-		myHtmlParser.setLinks()
-		myLinks = myHtmlParser.getLinks()
-		return myLinks
+		myLinks = noSitemap(myDomain,myDomain)
+		return myLinks;
+
+def noSitemap(myPage,myDomain):
+	global recursiveLinks
+	returnedLinks = scrapePage(myPage)
+	#showLinks(returnedLinks)
+	returnedLinks = cleanLinks(returnedLinks,myDomain)
+	returnedLinks = isDomain(returnedLinks,myDomain)
+	returnedLinks = rmDup(returnedLinks)
+
+	pageCount = 0
+	for i in returnedLinks:
+		if str(returnedLinks[pageCount]) not in recursiveLinks:
+			print str(returnedLinks[pageCount])
+			recursiveLinks.append(str(returnedLinks[pageCount]))
+			noSitemap(str(returnedLinks[pageCount]),myDomain)
+		pageCount = pageCount + 1
+
+	showLinks(recursiveLinks)
+	return recursiveLinks
+
+def scrapePage(myPage):
+	global myHtmlGetter
+	global myHtmlParser
+	myLinks = 0
+
+	myHtmlGetter.getHTML(myPage)
+        with open(myHtmlGetter.getFileName(), "r") as file:
+        	myHtmlFile = file.read()
+        	file.close()
+        myHtmlParser.setFile(myHtmlFile)
+        myHtmlParser.setLinks()
+        myLinks = myHtmlParser.getLinks()
+	return myLinks
 
 #Prints all links in the links list
 def showLinks(myLinks):
@@ -92,7 +116,7 @@ def showLinks(myLinks):
 
 def isDomain(myLinks,myDomain):
 	matchedLinks = []
-	myLinks = replaceMultipleList(myLinks,"")
+	#myLinks = replaceMultipleList(myLinks,"")
 	for i in myLinks:
 		if str(i).startswith(myDomain):
 			matchedLinks.append(str(i))
@@ -107,7 +131,12 @@ def cleanLinks(myLinks,myDomain):
 		elif str(myLinks[count]) == "#":
 			myLinks[count] = str(myDomain)
 		count = count + 1
-	return myLinks,myDomain;
+	myLinks = replaceMultipleList(myLinks,"")
+	count = 0
+	for i in myLinks:
+		myLinks[count] = "http://" + str(myLinks[count])
+		count = count + 1
+	return myLinks
 
 #From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
 #Removes dupicates from list
@@ -134,7 +163,7 @@ def checkLinks(myLinks):
 			print str(i) + " is bad"
 			print str(count + 1) + "/" + str(len(myLinks))
 		count = count + 1
-		time.sleep(1)
+		#time.sleep(2)
 	return goodLinks
 
 #Main
@@ -148,16 +177,21 @@ def main():
 	global myHtmlParser
 	myHtmlParser = HTMLParser()
 
+	global recursiveLinks
+	recursiveLinks = []
+
 	myDomainName = None
 	shortDomain = None
+	sitemapBool = None
 	matchedDomains = []
 	validLinks = []
 	links = []
 
 	myDomainName, shortDomain = start()
-	links = isSitemap(links,myDomainName)
-	links, myDomainName = cleanLinks(links,myDomainName)
-	matchedDomains = isDomain(links,shortDomain)
+	links = isSitemap(myDomainName)
+
+	links = cleanLinks(links,myDomainName)
+	matchedDomains = isDomain(links,myDomainName)
 	matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(matchedDomains)
 
