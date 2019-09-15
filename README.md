@@ -1,4 +1,8 @@
 # WorkingSeniorProject
+
+
+****	MUST USE PYTHON 2. WILL NOT WORK WITH PYTHON 3 ****
+
 Storage of my senior project, recreated because of fatal errors
 
 Stage1 contains scripts for running a SQL injection on the DVWA VM

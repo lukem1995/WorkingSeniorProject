@@ -9,49 +9,36 @@ from htmlGetter import HTMLGetter
 from htmlParser import HTMLParser
 
 
-#myBrowser = Browser()
-#myXmlParser = XmlParser()
-#myHtmlGetter = HTMLGetter()
-#myHtmlParser = HTMLParser()
-#xmlFile = None
-#goodLinks = []
-#links = None
-#myDomainName = None
-#myHtmlFile = None
-#shortDomain = None
-#replace = ["https://","http://","www."]
-#matchedDomains = []
-
 #Modified from code at https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
         #(Change is that mine works on a list of strings instead of just one string)
 #Removes list of strings from list of strings, modyfying the list
 def replaceMultipleList(mainStringList, newString):
 	toReplace = ["https://","http://","www."]
-        count = 0
-        for i in mainStringList:
-                for j in toReplace:
-                	if str(j) in str(i):
-                                mainStringList[count] = mainStringList[count].replace(j, newString)
-                count = count + 1
+	count = 0
+	for i in mainStringList:
+		for j in toReplace:
+			if str(j) in str(i):
+				mainStringList[count] = mainStringList[count].replace(j, newString)
+		count = count + 1
 	return mainStringList
 
 #Copied from https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
 #Removes list of strings from string
 def replaceMultiple(mainString, newString):
-        toReplace = ["https://","http://","www."]
+	toReplace = ["https://","http://","www."]
 	count = 0
-        for elem in toReplace:
-                if elem in mainString:
-                        mainString = mainString.replace(elem, newString)
-        return mainString
+	for elem in toReplace:
+		if elem in mainString:
+ 			mainString = mainString.replace(elem, newString)
+	return mainString
 
 
 #Gets domain from user and sets varaibles
 def start():
 	global myBrowser
-        myBrowser.setDomain()
-        domainName = myBrowser.getDomainName()
-        shortDomainName = replaceMultiple(domainName,"")
+	myBrowser.setDomain()
+	domainName = myBrowser.getDomainName()
+	shortDomainName = replaceMultiple(domainName,"")
 	return domainName, shortDomainName;
 
 def isSitemap(myDomain):
@@ -67,7 +54,7 @@ def isSitemap(myDomain):
 		myLinks = myXmlParser.getLinks()
 		#Runs if sitemap exists but parsing returns no links
 		if len(myLinks) == 0:
-			print "Sitemap is in a bad format"
+			print("Sitemap is in a bad format")
 			myLinks = noSitemap(myDomain,myDomain)
 			return myLinks;
 		return myLinks;
@@ -125,11 +112,14 @@ def isDomain(myLinks,myDomain):
 def cleanLinks(myLinks,myDomain):
 	count = 0
 	for i in myLinks:
-		if str(myLinks[count])[0] == "/":
-			myLinks[count] = str(myDomain) + str(myLinks[count])
+		try:
+			if str(myLinks[count])[0] == "/":
+				myLinks[count] = str(myDomain) + str(myLinks[count])
 
-		elif str(myLinks[count]) == "#":
-			myLinks[count] = str(myDomain)
+			elif str(myLinks[count]) == "#":
+				myLinks[count] = str(myDomain)
+		except:
+			None
 		count = count + 1
 	myLinks = replaceMultipleList(myLinks,"")
 	count = 0
