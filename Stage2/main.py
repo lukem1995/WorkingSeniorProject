@@ -45,6 +45,7 @@ def isSitemap(myDomain):
 	global myBrowser
 	global myXmlParser
 	myLinks = None
+	myDomainList = []
 #Checks for sitemap
 #If sitemap found, gets links from <loc> tags and saves to list
 #If sitemap not found, gets HTML from domain index and saves to file 
@@ -55,33 +56,47 @@ def isSitemap(myDomain):
 		#Runs if sitemap exists but parsing returns no links
 		if len(myLinks) == 0:
 			print("Sitemap is in a bad format")
-			myLinks = noSitemap(myDomain,myDomain)
+			myDomainList = scrapePage(myDomain)
+			myLinks = noSitemap(myDomainList,myDomain)
 			return myLinks;
 		return myLinks;
 	#Runs if no sitemap found
 	else:
-		myLinks = noSitemap(myDomain,myDomain)
+		myDomainList = scrapePage(myDomain)
+		myLinks = noSitemap(myDomainList,myDomain)
 		return myLinks;
 
-def noSitemap(myPage,myDomain):
+#Recursively finds pages
+def noSitemap(myPageList,myDomain):
 	global recursiveLinks
-	returnedLinks = scrapePage(myPage)
+	global recursionCount
+	nextList = []
+	currentList = []
+	print recursionCount
+	#returnedLinks = scrapePage(myPage)
 	#showLinks(returnedLinks)
-	returnedLinks = cleanLinks(returnedLinks,myDomain)
-	returnedLinks = isDomain(returnedLinks,myDomain)
-	returnedLinks = rmDup(returnedLinks)
+	myPageList = cleanLinks(myPageList,myDomain)
+	myPageList = isDomain(myPageList,myDomain)
+	myPageList = rmDup(myPageList)
 
 	pageCount = 0
-	for i in returnedLinks:
-		if str(returnedLinks[pageCount]) not in recursiveLinks:
-			print str(returnedLinks[pageCount])
-			recursiveLinks.append(str(returnedLinks[pageCount]))
-			noSitemap(str(returnedLinks[pageCount]),myDomain)
+	for i in myPageList:
+		if str(myPageList[pageCount]) not in recursiveLinks:
+			print str(myPageList[pageCount])
+			recursiveLinks.append(str(myPageList[pageCount]))
+			currentList = scrapePage(str(myPageList[pageCount]))
+			currentCount = 0
+			for j in currentList:
+				nextList.append(str(currentList[currentCount]))
+				currentCount = currentCount + 1
+			#nextList.append(str(returnedLinks[pageCount]),myDomain)
 		pageCount = pageCount + 1
-
-	showLinks(recursiveLinks)
-	return recursiveLinks
-
+	if len(nextList) == 0:
+		return recursiveLinks
+	else:
+		recursionCount = recursionCount + 1
+		noSitemap(nextList,myDomain)
+#Gets links from given page
 def scrapePage(myPage):
 	global myHtmlGetter
 	global myHtmlParser
@@ -169,6 +184,8 @@ def main():
 
 	global recursiveLinks
 	recursiveLinks = []
+	global recursionCount
+	recursionCount = 1
 
 	myDomainName = None
 	shortDomain = None
