@@ -29,7 +29,7 @@ def replaceMultiple(mainString, newString):
 	count = 0
 	for elem in toReplace:
 		if elem in mainString:
- 			mainString = mainString.replace(elem, newString)
+			mainString = mainString.replace(elem, newString)
 	return mainString
 
 
@@ -80,6 +80,7 @@ def noSitemap(myPageList,myDomain):
 	print recursionCount
 	#returnedLinks = scrapePage(myPage)
 	#showLinks(returnedLinks)
+	myPageList = rmDup(myPageList)
 	myPageList = cleanLinks(myPageList,myDomain)
 	myPageList = isDomain(myPageList,myDomain)
 	myPageList = rmDup(myPageList)
@@ -95,7 +96,7 @@ def noSitemap(myPageList,myDomain):
 				nextList.append(str(currentList[currentCount]))
 				currentCount = currentCount + 1
 			#nextList.append(str(returnedLinks[pageCount]),myDomain)
-		print str(recursionCount) + "," + str(pageCount)
+		print recursionCount + 1, ",", pageCount, "/", len(myPageList)
 		pageCount = pageCount + 1
 	
 	if len(nextList) == 0:
@@ -133,11 +134,13 @@ def isDomain(myLinks,myDomain):
 	matchedLinks = []
 	#myLinks = replaceMultipleList(myLinks,"")
 	count = 0
+	count2 = 1
 	for i in myLinks:
 		if str(i).startswith(myDomain):
 			matchedLinks.append(str(i))
-			print count
 			count = count + 1 
+		print "Domain check: ", count2, "/", len(myLinks)
+		count2 = count2 + 1
 	print "end domain check"
 	return matchedLinks
 
@@ -157,18 +160,19 @@ def cleanLinks(myLinks,myDomain):
 					myLinks.pop(count)
 			except:
 				None
-			print count
+			print "Cleaning: ", count + 1, "/" , len(myLinks)
 			count = count + 1
 		myLinks = replaceMultipleList(myLinks,"")
+		myLinks = rmDup(myLinks)
 		count = 0
 		for i in myLinks:
 			myLinks[count] = "http://" + str(myLinks[count])
-			print count
+			print "Cleaning part2: ", count + 1, "/", len(myLinks)
 			count = count + 1
 		print "end clean"	
 		return myLinks
 	except:
-		print "end clean"
+		print "could not clean"
 		return myLinks
 
 #From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
@@ -181,6 +185,7 @@ def rmDup(myList):
 
 #Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
 def checkLinks(myLinks):
+	print "Begin validation"
 	global myBrowser
 	count = 0
 	goodLinks = []
@@ -199,6 +204,7 @@ def checkLinks(myLinks):
 			print str(count + 1) + "/" + str(len(myLinks))
 		count = count + 1
 		#time.sleep(2)
+	print "End validation"
 	return goodLinks
 
 #Main

@@ -1,5 +1,5 @@
 http://1dave1cup.com/extra/bumpers
-http://1dave1cup.com/view/index.html
+http://1dave1cup.com/extra/securitysummit
 http://1dave1cup.com/extra
 http://1dave1cup.com/indexNEO.html
 http://1dave1cup.com/extra/awkwardhug
@@ -7,10 +7,10 @@ http://1dave1cup.com/extra/ClevelandBsides
 http://1dave1cup.com/extra/psa.html
 http://1dave1cup.com/extra/neoisf
 http://1dave1cup.com/view2/index.html
-http://1dave1cup.com/minertest
+http://1dave1cup.com/view/index.html
 http://1dave1cup.com/extra/random
 http://1dave1cup.com/extra/index.html
-http://1dave1cup.com/extra/securitysummit
+http://1dave1cup.com/minertest
 http://1dave1cup.com/
 http://1dave1cup.com/extra/
 http://1dave1cup.com
