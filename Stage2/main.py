@@ -44,7 +44,7 @@ def start():
 def isSitemap(myDomain):
 	global myBrowser
 	global myXmlParser
-	myLinks = None
+	myLinks = []
 	myDomainList = []
 #Checks for sitemap
 #If sitemap found, gets links from <loc> tags and saves to list
@@ -62,7 +62,11 @@ def isSitemap(myDomain):
 		return myLinks;
 	#Runs if no sitemap found
 	else:
+		#print myDomain
+		#print type(myDomain)
 		myDomainList = scrapePage(myDomain)
+		#showLinks(myDomainList)
+		#print myDomain
 		myLinks = noSitemap(myDomainList,myDomain)
 		return myLinks;
 
@@ -72,6 +76,7 @@ def noSitemap(myPageList,myDomain):
 	global recursionCount
 	nextList = []
 	currentList = []
+	myLinks = []
 	print recursionCount
 	#returnedLinks = scrapePage(myPage)
 	#showLinks(returnedLinks)
@@ -90,17 +95,24 @@ def noSitemap(myPageList,myDomain):
 				nextList.append(str(currentList[currentCount]))
 				currentCount = currentCount + 1
 			#nextList.append(str(returnedLinks[pageCount]),myDomain)
+		print str(recursionCount) + "," + str(pageCount)
 		pageCount = pageCount + 1
+	
 	if len(nextList) == 0:
-		return recursiveLinks
+		#showLinks(recursiveLinks)
+		myPageList = recursiveLinks
+		#showLinks(myPageList)
+		#print "here"
+		return myPageList
 	else:
 		recursionCount = recursionCount + 1
 		noSitemap(nextList,myDomain)
+
 #Gets links from given page
 def scrapePage(myPage):
 	global myHtmlGetter
 	global myHtmlParser
-	myLinks = 0
+	myLinks = []
 
 	myHtmlGetter.getHTML(myPage)
         with open(myHtmlGetter.getFileName(), "r") as file:
@@ -117,36 +129,54 @@ def showLinks(myLinks):
 		print str(i)
 
 def isDomain(myLinks,myDomain):
+	print "begin domain check"
 	matchedLinks = []
 	#myLinks = replaceMultipleList(myLinks,"")
+	count = 0
 	for i in myLinks:
 		if str(i).startswith(myDomain):
 			matchedLinks.append(str(i))
+			print count
+			count = count + 1 
+	print "end domain check"
 	return matchedLinks
 
 def cleanLinks(myLinks,myDomain):
 	count = 0
-	for i in myLinks:
-		try:
-			if str(myLinks[count])[0] == "/":
-				myLinks[count] = str(myDomain) + str(myLinks[count])
+	print "begin clean"
+	try:
+		for i in myLinks:
+			try:
+				if str(myLinks[count])[0] == "/":
+					myLinks[count] = str(myDomain) + str(myLinks[count])
 
-			elif str(myLinks[count]) == "#":
-				myLinks[count] = str(myDomain)
-		except:
-			None
-		count = count + 1
-	myLinks = replaceMultipleList(myLinks,"")
-	count = 0
-	for i in myLinks:
-		myLinks[count] = "http://" + str(myLinks[count])
-		count = count + 1
-	return myLinks
+				elif str(myLinks[count]) == "#":
+					myLinks[count] = str(myDomain)
+
+				elif str(myLinks[count]) == "None" or str(myLinks[count]) == "none":
+					myLinks.pop(count)
+			except:
+				None
+			print count
+			count = count + 1
+		myLinks = replaceMultipleList(myLinks,"")
+		count = 0
+		for i in myLinks:
+			myLinks[count] = "http://" + str(myLinks[count])
+			print count
+			count = count + 1
+		print "end clean"	
+		return myLinks
+	except:
+		print "end clean"
+		return myLinks
 
 #From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
 #Removes dupicates from list
 def rmDup(myList):
+	print "begin rmDup"
 	myList = list(dict.fromkeys(myList))
+	print "end rmdup"
 	return myList
 
 #Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
@@ -187,20 +217,21 @@ def main():
 	global recursionCount
 	recursionCount = 1
 
-	myDomainName = None
-	shortDomain = None
+	myDomainName = "None"
+	shortDomain = "None"
 	sitemapBool = None
 	matchedDomains = []
 	validLinks = []
 	links = []
 
 	myDomainName, shortDomain = start()
-	links = isSitemap(myDomainName)
-
-	links = cleanLinks(links,myDomainName)
-	matchedDomains = isDomain(links,myDomainName)
-	matchedDomains = rmDup(matchedDomains)
-	validLinks = checkLinks(matchedDomains)
+	isSitemap(myDomainName)
+	#showLinks(recursiveLinks)
+	#print recursiveLinks
+	#cleanLinks(recursiveLinks,myDomainName)
+	#matchedDomains = isDomain(links,myDomainName)
+	#matchedDomains = rmDup(matchedDomains)
+	validLinks = checkLinks(recursiveLinks)
 
 if __name__ == "__main__":
 	main()
