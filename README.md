@@ -10,7 +10,10 @@ Stage1 contains scripts for running a SQL injection on the DVWA VM
 Stage2 contains scripts to determine if pages of a domain are vulnerable to SQL Injection
 	
 	Usage: Run main.py and enter a domain name. Sit back and watch
-
+        options: --login (use if there is a login page) 
+                 -u <username> (input the username for the login)
+                 -p <password> (input the password for the login)
+                 --dvwa (use if testing against the DVWA VM)
 	Current Steps:
 		1. Get the domain name from the user (if needed add the "http://")
 		2. Checks for sitemap
