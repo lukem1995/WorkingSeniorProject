@@ -136,6 +136,8 @@ def isDomain(myLinks,myDomain):
 	count = 0
 	count2 = 1
 	for i in myLinks:
+		print myDomain
+		print str(i)
 		if str(i).startswith(myDomain):
 			matchedLinks.append(str(i))
 			count = count + 1 
