@@ -32,5 +32,6 @@ def main(argv):
     if isLogin:
         myFetcher.setCredentials(username, password)
         myFetcher.login(domain)
+        print myFetcher.getCookies()
 if __name__ == "__main__":
     main(sys.argv[1:])
