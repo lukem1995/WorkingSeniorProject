@@ -10,6 +10,7 @@ def main(argv):
     myFetcher = Fetcher()
     username = ""
     password = ""
+    domain = ""
 
     try:
         opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain="])
@@ -25,9 +26,14 @@ def main(argv):
             username = arg
         elif opt == "-p":
             password = arg
+        elif opt in ("-d", "--domain"):
+            domain = arg
+
     if isLogin:
         myFetcher.setCredentials(username, password)
-
+        print domain
+        myFetcher.login(domain)
+        print myFetcher.getUrlWithRequest()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

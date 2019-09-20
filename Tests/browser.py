@@ -8,9 +8,9 @@ class Browser():
 
 	def __init__(self):
 		self.browser = mechanize.Browser()
-                self.cookiejar = cookielib.CookieJar()
-                self.browser.set_cookiejar(self.cookiejar)
-                self.browser.set_handle_robots(False)
+		self.cookiejar = cookielib.CookieJar()
+		self.browser.set_cookiejar(self.cookiejar)
+		self.browser.set_handle_robots(False)
 		self.domain = None
 		self.fullDomain = None
 		self.siteMapUrl = None
@@ -20,16 +20,16 @@ class Browser():
 
 	#Returns Cookies
 	def getCookies(self):
-                count = 0
-                for cookie in self.cookiejar:
-                        cookiename = cookie.name
-                        cookievalue = cookie.value
-                        if count == 0:
-                                fullcookies = cookiename + "=" + cookievalue
-                        else:
-                                fullcookies = fullcookies + ";" + cookiename + "=" + cookievalue
-                        count = count + 1
-                return fullcookies
+		count = 0
+		for cookie in self.cookiejar:
+			cookiename = cookie.name
+			cookievalue = cookie.value
+			if count == 0:
+				fullcookies = cookiename + "=" + cookievalue
+			else:
+				fullcookies = fullcookies + ";" + cookiename + "=" + cookievalue
+				count = count + 1
+				return fullcookies
 
 	#Open browser session
 	def openDomain(self):
@@ -40,9 +40,9 @@ class Browser():
 			print "Bad domain. Try again"
 			self.setDomain()
 
-        #Get target domain from user
-        def setDomain(self):
-                self.fullDomain = raw_input("Enter the desired domain: ")
+	#Get target domain from user
+    def setDomain(self):
+		self.fullDomain = raw_input("Enter the desired domain: ")
 		if self.fullDomain.startswith("http://") or self.fullDomain.startswith("https://"):
 			self.openDomain()
 		else:
@@ -60,7 +60,7 @@ class Browser():
 			self.domainSession = self.browser.open(self.siteMapUrl)
 			mySitemap = self.domainSession.read()
 			with open(self.sitemapFile,"w+") as sitemap:
-				siteMap.write(mySitemap)
+				sitemap.write(mySitemap)
 				return True
 
 		except:
@@ -69,14 +69,14 @@ class Browser():
 				self.domainSession = self.browser.open(self.siteMapUrl)
 				mySitemap = self.domainSession.read()
 				with open(self.sitemapFile,"w+") as siteMap:
-                                	siteMap.write(mySitemap)
+					siteMap.write(mySitemap)
 					return True
 			except:
-                		with open(self.htmlFile,"w+") as htmlFile:
-                        		htmlFile.write(self.domainSession.read())
-                        		htmlFile.close()
+				with open(self.htmlFile,"w+") as htmlFile:
+					htmlFile.write(self.domainSession.read())
+					htmlFile.close()
 				print "No sitemap found"
-                		#print "Saved HTML to " + self.htmlFile
+					#print "Saved HTML to " + self.htmlFile
 				return False
 	
 	def checkLink(self,url):
