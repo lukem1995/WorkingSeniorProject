@@ -98,7 +98,7 @@ def noSitemap(myPageList,myDomain):
 			#nextList.append(str(returnedLinks[pageCount]),myDomain)
 		print recursionCount + 1, ",", pageCount, "/", len(myPageList)
 		pageCount = pageCount + 1
-	
+
 	if len(nextList) == 0:
 		#showLinks(recursiveLinks)
 		myPageList = recursiveLinks
@@ -131,19 +131,24 @@ def showLinks(myLinks):
 
 def isDomain(myLinks,myDomain):
 	print "begin domain check"
+	global isDVWA
 	matchedLinks = []
 	#myLinks = replaceMultipleList(myLinks,"")
 	count = 0
 	count2 = 1
+	if isDVWA:
+		myLinks = replaceMultipleList(myLinks,"")
+	for j in myLinks:
+		if isDVWA:
+			myLinks[count] = str(myDomain) + "/" + str(myLinks[count])
+			count = count + 1
 	for i in myLinks:
-		print myDomain
-		print str(i)
 		if str(i).startswith(myDomain):
 			matchedLinks.append(str(i))
-			count = count + 1 
 		print "Domain check: ", count2, "/", len(myLinks)
 		count2 = count2 + 1
 	print "end domain check"
+	print "length of matched links is ", len(matchedLinks)
 	return matchedLinks
 
 def cleanLinks(myLinks,myDomain):
@@ -154,10 +159,10 @@ def cleanLinks(myLinks,myDomain):
 			try:
 				if str(myLinks[count])[0] == "/":
 					myLinks[count] = str(myDomain) + str(myLinks[count])
-
+					print myLinks[count]
 				elif str(myLinks[count]) == "#":
 					myLinks[count] = str(myDomain)
-
+					print myLinks[count]
 				elif str(myLinks[count]) == "None" or str(myLinks[count]) == "none":
 					myLinks.pop(count)
 			except:
@@ -171,7 +176,7 @@ def cleanLinks(myLinks,myDomain):
 			myLinks[count] = "http://" + str(myLinks[count])
 			print "Cleaning part2: ", count + 1, "/", len(myLinks)
 			count = count + 1
-		print "end clean"	
+		print "end clean"
 		return myLinks
 	except:
 		print "could not clean"
@@ -224,6 +229,8 @@ def main(argv):
 	recursiveLinks = []
 	global recursionCount
 	recursionCount = 1
+	global isDVWA
+	isDVWA = False
 
 	isLogin = False
 	myUsername = "None"
@@ -236,7 +243,7 @@ def main(argv):
 	links = []
 
 	try:
-		opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain="])
+		opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain=", "dvwa"])
 	except getopt.GetoptError:
 		print "(optional)\n--login followed by \n -u <username> -p <password> "
 		exit()
@@ -248,6 +255,8 @@ def main(argv):
 			myUsername = arg
 		elif opt == "-p":
 			myPassword = arg
+		elif opt == "--dvwa":
+			isDVWA = True
 
 	if isLogin:
 		myHtmlGetter.setCredentials(myUsername, myPassword)
@@ -262,7 +271,7 @@ def main(argv):
 	#print recursiveLinks
 	#cleanLinks(recursiveLinks,myDomainName)
 	#matchedDomains = isDomain(links,myDomainName)
-    #matchedDomains = rmDup(matchedDomains)
+    	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
 
 if __name__ == "__main__":
