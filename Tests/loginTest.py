@@ -31,9 +31,6 @@ def main(argv):
 
     if isLogin:
         myFetcher.setCredentials(username, password)
-        print domain
         myFetcher.login(domain)
-        print myFetcher.getUrlWithRequest()
-
 if __name__ == "__main__":
     main(sys.argv[1:])
