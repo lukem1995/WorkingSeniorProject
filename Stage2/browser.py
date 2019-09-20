@@ -4,6 +4,8 @@ import mechanize
 import cookielib
 import xml
 
+
+# noinspection PyInconsistentIndentation
 class Browser():
 
 	def __init__(self):
@@ -17,8 +19,10 @@ class Browser():
 		self.domainSession = None
 		self.sitemapFile = "mySitemap.xml"
 		self.htmlFile = "myHTML.html"
+		self.username = "None"
+		self.password = "None"
 
-	#Returns Cookies
+	# Returns Cookies
 	def getCookies(self):
                 count = 0
                 for cookie in self.cookiejar:
@@ -31,7 +35,29 @@ class Browser():
                         count = count + 1
                 return fullcookies
 
-	#Open browser session
+	# Sets credentials
+	def setCredentials(self, username, password):
+		self.username = username
+		self.password = password
+
+	# Log into site
+	def login(self):
+		try:
+			pageBefore = self.browser.open(self.fullDomain)
+			self.browser.select_form(nr=0)
+			self.browser["username"] = self.username
+			self.browser["password"] = self.password
+			self.browser.submit()
+			pageAfter = self.browser.open(self.fullDomain)
+			if pageBefore == pageAfter:
+				print "Login failed. Try again"
+				exit()
+			print "Login successful"
+		except:
+			print "Login failed. Try again"
+			exit()
+
+	# Open browser session
 	def openDomain(self):
 		try:
 			self.domainSession = self.browser.open(self.fullDomain)
@@ -40,27 +66,27 @@ class Browser():
 			print "Bad domain. Try again"
 			self.setDomain()
 
-        #Get target domain from user
-        def setDomain(self):
-                self.fullDomain = raw_input("Enter the desired domain: ")
+    # Get target domain from user
+	def setDomain(self):
+		self.fullDomain = raw_input("Enter the desired domain: ")
 		if self.fullDomain.startswith("http://") or self.fullDomain.startswith("https://"):
 			self.openDomain()
 		else:
 			self.fullDomain = "http://" + self.fullDomain
 			self.openDomain()
 
-	#Returns the domain being used
+	# Returns the domain being used
 	def getDomainName(self):
 		return self.fullDomain
 
-	#Checks for sitemap on chosen domain and if present writes to file
+	# Checks for sitemap on chosen domain and if present writes to file
 	def checkSitemap(self):		
 		self.siteMapUrl = self.fullDomain + "/sitemap"
 		try:
 			self.domainSession = self.browser.open(self.siteMapUrl)
 			mySitemap = self.domainSession.read()
 			with open(self.sitemapFile,"w+") as sitemap:
-				siteMap.write(mySitemap)
+				sitemap.write(mySitemap)
 				return True
 
 		except:
@@ -69,21 +95,21 @@ class Browser():
 				self.domainSession = self.browser.open(self.siteMapUrl)
 				mySitemap = self.domainSession.read()
 				with open(self.sitemapFile,"w+") as siteMap:
-                                	siteMap.write(mySitemap)
+					siteMap.write(mySitemap)
 					return True
 			except:
                 		with open(self.htmlFile,"w+") as htmlFile:
                         		htmlFile.write(self.domainSession.read())
                         		htmlFile.close()
 				print "No sitemap found"
-                		#print "Saved HTML to " + self.htmlFile
+                		# print "Saved HTML to " + self.htmlFile
 				return False
 	
 	def checkLink(self,url):
-		#print url
+		# print url
 		try:
-			#print url
-			self.browser.open(url,timeout=4)
+			# print url
+			self.browser.open(url, timeout=4)
 			return True
 		except:
 			return False

@@ -2,16 +2,16 @@ import time
 import sys
 reload(sys)
 sys.setdefaultencoding("utf8")
-sys.setrecursionlimit(1000000)
+import getopt
 from browser import Browser
 from xmlParser import XmlParser
 from htmlGetter import HTMLGetter
 from htmlParser import HTMLParser
 
 
-#Modified from code at https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
-        #(Change is that mine works on a list of strings instead of just one string)
-#Removes list of strings from list of strings, modyfying the list
+# Modified from code at https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
+        # (Change is that mine works on a list of strings instead of just one string)
+# Removes list of strings from list of strings, modyfying the list
 def replaceMultipleList(mainStringList, newString):
 	toReplace = ["https://","http://","www."]
 	count = 0
@@ -22,8 +22,8 @@ def replaceMultipleList(mainStringList, newString):
 		count = count + 1
 	return mainStringList
 
-#Copied from https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
-#Removes list of strings from string
+# Copied from https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
+# Removes list of strings from string
 def replaceMultiple(mainString, newString):
 	toReplace = ["https://","http://","www."]
 	count = 0
@@ -33,7 +33,7 @@ def replaceMultiple(mainString, newString):
 	return mainString
 
 
-#Gets domain from user and sets varaibles
+# Gets domain from user and sets varaibles
 def start():
 	global myBrowser
 	myBrowser.setDomain()
@@ -46,21 +46,21 @@ def isSitemap(myDomain):
 	global myXmlParser
 	myLinks = []
 	myDomainList = []
-#Checks for sitemap
-#If sitemap found, gets links from <loc> tags and saves to list
-#If sitemap not found, gets HTML from domain index and saves to file 
+# Checks for sitemap
+# If sitemap found, gets links from <loc> tags and saves to list
+# If sitemap not found, gets HTML from domain index and saves to file
 	if myBrowser.checkSitemap() == True:
 		myXmlParser.setFile(myBrowser.sitemapFile)
 		myXmlParser.setLinks()
 		myLinks = myXmlParser.getLinks()
-		#Runs if sitemap exists but parsing returns no links
+		# Runs if sitemap exists but parsing returns no links
 		if len(myLinks) == 0:
 			print("Sitemap is in a bad format")
 			myDomainList = scrapePage(myDomain)
 			myLinks = noSitemap(myDomainList,myDomain)
 			return myLinks;
 		return myLinks;
-	#Runs if no sitemap found
+	# Runs if no sitemap found
 	else:
 		#print myDomain
 		#print type(myDomain)
@@ -70,7 +70,7 @@ def isSitemap(myDomain):
 		myLinks = noSitemap(myDomainList,myDomain)
 		return myLinks;
 
-#Recursively finds pages
+# ecursively finds pages
 def noSitemap(myPageList,myDomain):
 	global recursiveLinks
 	global recursionCount
@@ -109,7 +109,7 @@ def noSitemap(myPageList,myDomain):
 		recursionCount = recursionCount + 1
 		noSitemap(nextList,myDomain)
 
-#Gets links from given page
+# Gets links from given page
 def scrapePage(myPage):
 	global myHtmlGetter
 	global myHtmlParser
@@ -121,10 +121,10 @@ def scrapePage(myPage):
         	file.close()
         myHtmlParser.setFile(myHtmlFile)
         myHtmlParser.setLinks()
-        myLinks = myHtmlParser.getLinks()
+    	myLinks = myHtmlParser.getLinks()
 	return myLinks
 
-#Prints all links in the links list
+# Prints all links in the links list
 def showLinks(myLinks):
 	for i in myLinks:
 		print str(i)
@@ -175,15 +175,15 @@ def cleanLinks(myLinks,myDomain):
 		print "could not clean"
 		return myLinks
 
-#From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
-#Removes dupicates from list
+# From https://www.w3schools.com/python/python_howto_remove_duplicates.asp
+# Removes dupicates from list
 def rmDup(myList):
 	print "begin rmDup"
 	myList = list(dict.fromkeys(myList))
 	print "end rmdup"
 	return myList
 
-#Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
+# Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
 def checkLinks(myLinks):
 	print "Begin validation"
 	global myBrowser
@@ -207,8 +207,8 @@ def checkLinks(myLinks):
 	print "End validation"
 	return goodLinks
 
-#Main
-def main():
+# Main
+def main(argv):
 	global myBrowser
 	myBrowser = Browser()
 	global myXmlParser
@@ -223,6 +223,9 @@ def main():
 	global recursionCount
 	recursionCount = 1
 
+	isLogin = False
+	myUsername = "None"
+	myPassword = "None"
 	myDomainName = "None"
 	shortDomain = "None"
 	sitemapBool = None
@@ -230,14 +233,36 @@ def main():
 	validLinks = []
 	links = []
 
-	myDomainName, shortDomain = start()
+	try:
+		opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain="])
+	except getopt.GetoptError:
+		print "(optional)\n--login followed by \n -u <username> -p <password> "
+		exit()
+
+	for opt, arg in opts:
+		if opt == "--login":
+			isLogin = True
+		elif opt == "-u":
+			myUsername = arg
+		elif opt == "-p":
+			myPassword = arg
+
+	if isLogin:
+		myBrowser.setCredentials(myUsername, myPassword)
+		myDomainName, shortDomain = start()
+		myBrowser.login()
+		myHtmlGetter.getHTML(myDomainName)
+		exit()
+	else:
+		myDomainName, shortDomain = start()
+
 	isSitemap(myDomainName)
 	#showLinks(recursiveLinks)
 	#print recursiveLinks
 	#cleanLinks(recursiveLinks,myDomainName)
 	#matchedDomains = isDomain(links,myDomainName)
-	#matchedDomains = rmDup(matchedDomains)
+    #matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])
