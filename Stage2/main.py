@@ -248,11 +248,10 @@ def main(argv):
 			myPassword = arg
 
 	if isLogin:
-		myBrowser.setCredentials(myUsername, myPassword)
+		myHtmlGetter.setCredentials(myUsername, myPassword)
 		myDomainName, shortDomain = start()
-		myBrowser.login()
+		myHtmlGetter.login(myDomainName)
 		myHtmlGetter.getHTML(myDomainName)
-		exit()
 	else:
 		myDomainName, shortDomain = start()
 

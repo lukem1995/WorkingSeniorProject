@@ -20,8 +20,9 @@ class HTMLGetter():
 		self.username = username
 		self.password = password
 
-	def login(self):
+	def login(self,url):
 		try:
+			self.domain = url
 			pageBefore = self.browser.open(self.domain)
 			self.browser.select_form(nr=0)
 			self.browser["username"] = self.username
@@ -29,12 +30,12 @@ class HTMLGetter():
 			self.browser.submit()
 			pageAfter = self.browser.open(self.domain)
 			if pageBefore == pageAfter:
-				print "Login failed. Try again"
+				print "Login failed 1. Try again"
 				exit()
 			print "Login successful"
 		except:
-			print "Login failed. Try again"
-			exit()
+			print "Login failed 2. Try again"
+			exit(1)
 
 	def getHTML(self, url):
 		self.domain = url
