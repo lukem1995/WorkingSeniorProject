@@ -3,6 +3,7 @@
 import mechanize
 import cookielib
 import time
+import requests
 
 class HTMLGetter():
 
@@ -21,9 +22,6 @@ class HTMLGetter():
 		self.password = password
 
 	def login(self, url):
-		print url
-		print self.username
-		print self.password
 		try:
 			self.domain = url
 			self.browser.open(self.domain)
@@ -68,13 +66,23 @@ class HTMLGetter():
 			for control in self.browser.form.controls:
 				if control.type == "submit":
 					control.disabled = True
-			for control in self.browser.form.controls:
+					#print "disabled"
+			#for control in self.browser.form.controls:
 				#print control
-				#print "type=%s, name=%s value=%s" % (control.type, control.name, self.browser[control.name])
-				if control.type == "text":  # means it's class ClientForm.TextControl
-					control.value = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
-					print "input"
+			#	print "type=%s, name=%s value=%s" % (control.type, control.name, self.browser[control.name])
+			#	if control.type == "text":  # means it's class ClientForm.TextControl
+			#		control.value = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
+			#for control in self.browser.form.controls:
+			#	print control.value
+			for control in self.browser.form.controls:
+				inputname = str(control.name)
+				self.browser.select_form(nr=count)
+				if not control.disabled:
+					self.browser[inputname] = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
+				#print str(self.browser[inputname])
 			response = self.browser.submit()
-			print response.read()
-			#self.browser.back()
+			with open("form_response.txt", "w+") as htmlFile:
+				htmlFile.write(response.read())
+				htmlFile.close()
+			self.browser.back()
 			count = count + 1
