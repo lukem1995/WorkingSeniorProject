@@ -40,8 +40,8 @@ class Browser():
 			print "Bad domain. Try again"
 			self.setDomain()
 
-	#Get target domain from user
-    def setDomain(self):
+	#	Get target domain from user
+	def setDomain(self):
 		self.fullDomain = raw_input("Enter the desired domain: ")
 		if self.fullDomain.startswith("http://") or self.fullDomain.startswith("https://"):
 			self.openDomain()

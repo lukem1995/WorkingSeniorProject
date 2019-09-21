@@ -199,8 +199,8 @@ def checkLinks(myLinks):
 	with open("GoodLinks.txt","w+") as glFile:
 		glFile.close()
 	for i in myLinks:
-		if myBrowser.checkLink(i) == True:
-			with open("GoodLinks.txt","a") as glFile:
+		if myBrowser.checkLink(i):
+			with open("GoodLinks.txt", "a") as glFile:
                         	glFile.write(i + "\n")
                         	glFile.close()
 			goodLinks.append(i)
