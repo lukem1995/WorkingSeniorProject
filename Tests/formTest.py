@@ -25,6 +25,7 @@ def scrapePage(myPage):
     global myHtmlGetter
     global myHtmlParser
     global myForms
+    global formType
 
     myHtmlGetter.getHTML(myPage)
     with open(myHtmlGetter.getFileName(), "r") as file:
@@ -33,6 +34,8 @@ def scrapePage(myPage):
     myHtmlParser.setFile(myHtmlFile)
     myHtmlParser.setForms()
     myForms = myHtmlParser.getForms()
+    myHtmlParser.setFormMethod()
+    formType = myHtmlParser.getFormMethod
 
 def main(argv):
     global myBrowser
@@ -41,6 +44,8 @@ def main(argv):
     myHtmlGetter = HTMLGetter()
     global myHtmlParser
     myHtmlParser = HTMLParser()
+    global formType
+    formType = "None"
 
     isLogin = False
     myUsername = "None"
@@ -66,17 +71,21 @@ def main(argv):
         elif opt == "--attack":
             attackURL = arg
 
+    myDomainName = start()
+
     if isLogin:
         myHtmlGetter.setCredentials(myUsername, myPassword)
-        myDomainName = start()
         #scrapePage(myDomainName)
         myHtmlGetter.login(myDomainName)
         myHtmlGetter.getHTML(myDomainName)
 
     #scrapePage(attackURL)
+    #print formType
     #print myForms
     #myHtmlGetter.getForms(attackURL)
-    myHtmlGetter.mechforms(attackURL)
+    #myHtmlGetter.mechforms(attackURL)
+    myHtmlGetter.mechforms2(attackURL)
+    #myHtmlGetter.getForm(attackURL)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

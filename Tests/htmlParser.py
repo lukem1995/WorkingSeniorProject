@@ -8,6 +8,7 @@ class HTMLParser():
 		self.soup = None
 		self.links = []
 		self.forms = {}
+		self.formType = "None"
 
 	def setFile(self,htmlFile):
 		self.file = htmlFile
@@ -31,3 +32,15 @@ class HTMLParser():
 
 	def getForms(self):
 		return self.forms
+
+	def setFormMethod(self):
+		for url in self.soup.findAll("form"):
+			self.formType = url.get("method")
+			print self.formType
+
+	def getFormMethod(self):
+		print self.formType
+		return str(self.formType)
+
+
+
