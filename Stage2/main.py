@@ -13,7 +13,7 @@ from htmlParser import HTMLParser
         # (Change is that mine works on a list of strings instead of just one string)
 # Removes list of strings from list of strings, modyfying the list
 def replaceMultipleList(mainStringList, newString):
-	toReplace = ["https://","http://","www."]
+	toReplace = ["https://", "http://", "www."]
 	count = 0
 	for i in mainStringList:
 		for j in toReplace:
@@ -25,7 +25,7 @@ def replaceMultipleList(mainStringList, newString):
 # Copied from https://thispointer.com/python-how-to-replace-single-or-multiple-characters-in-a-string/
 # Removes list of strings from string
 def replaceMultiple(mainString, newString):
-	toReplace = ["https://","http://","www."]
+	toReplace = ["https://", "http://", "www."]
 	count = 0
 	for elem in toReplace:
 		if elem in mainString:
@@ -38,7 +38,7 @@ def start():
 	global myBrowser
 	myBrowser.setDomain()
 	domainName = myBrowser.getDomainName()
-	shortDomainName = replaceMultiple(domainName,"")
+	shortDomainName = replaceMultiple(domainName, "")
 	return domainName, shortDomainName;
 
 def isSitemap(myDomain):
@@ -49,7 +49,7 @@ def isSitemap(myDomain):
 # Checks for sitemap
 # If sitemap found, gets links from <loc> tags and saves to list
 # If sitemap not found, gets HTML from domain index and saves to file
-	if myBrowser.checkSitemap() == True:
+	if myBrowser.checkSitemap():
 		myXmlParser.setFile(myBrowser.sitemapFile)
 		myXmlParser.setLinks()
 		myLinks = myXmlParser.getLinks()
@@ -107,7 +107,7 @@ def noSitemap(myPageList,myDomain):
 		return myPageList
 	else:
 		recursionCount = recursionCount + 1
-		noSitemap(nextList,myDomain)
+		noSitemap(nextList, myDomain)
 
 # Gets links from given page
 def scrapePage(myPage):
@@ -116,12 +116,12 @@ def scrapePage(myPage):
 	myLinks = []
 
 	myHtmlGetter.getHTML(myPage)
-        with open(myHtmlGetter.getFileName(), "r") as file:
-        	myHtmlFile = file.read()
-        	file.close()
-        myHtmlParser.setFile(myHtmlFile)
-        myHtmlParser.setLinks()
-    	myLinks = myHtmlParser.getLinks()
+	with open(myHtmlGetter.getFileName(), "r") as file:
+		myHtmlFile = file.read()
+		file.close()
+		myHtmlParser.setFile(myHtmlFile)
+		myHtmlParser.setLinks()
+		myLinks = myHtmlParser.getLinks()
 	return myLinks
 
 # Prints all links in the links list
@@ -137,7 +137,7 @@ def isDomain(myLinks,myDomain):
 	count = 0
 	count2 = 1
 	if isDVWA:
-		myLinks = replaceMultipleList(myLinks,"")
+		myLinks = replaceMultipleList(myLinks, "")
 	for j in myLinks:
 		if isDVWA:
 			myLinks[count] = str(myDomain) + "/" + str(myLinks[count])
@@ -201,8 +201,8 @@ def checkLinks(myLinks):
 	for i in myLinks:
 		if myBrowser.checkLink(i):
 			with open("GoodLinks.txt", "a") as glFile:
-                        	glFile.write(i + "\n")
-                        	glFile.close()
+				glFile.write(i + "\n")
+				glFile.close()
 			goodLinks.append(i)
 			print str(i) + " is good" 
 			print str(count + 1) +  "/" + str(len(myLinks))
@@ -232,6 +232,7 @@ def main(argv):
 	global isDVWA
 	isDVWA = False
 
+	loginPage = "None"
 	isLogin = False
 	myUsername = "None"
 	myPassword = "None"
@@ -243,13 +244,14 @@ def main(argv):
 	links = []
 
 	try:
-		opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain=", "dvwa"])
+		opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "dvwa"])
 	except getopt.GetoptError:
 		print "(optional)\n--login followed by \n -u <username> -p <password> "
 		exit()
 
 	for opt, arg in opts:
 		if opt == "--login":
+			loginPage = arg
 			isLogin = True
 		elif opt == "-u":
 			myUsername = arg
@@ -261,7 +263,7 @@ def main(argv):
 	if isLogin:
 		myHtmlGetter.setCredentials(myUsername, myPassword)
 		myDomainName, shortDomain = start()
-		myHtmlGetter.login(myDomainName)
+		myHtmlGetter.login(loginPage)
 		myHtmlGetter.getHTML(myDomainName)
 	else:
 		myDomainName, shortDomain = start()

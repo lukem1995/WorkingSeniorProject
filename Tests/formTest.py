@@ -47,6 +47,7 @@ def main(argv):
     global formType
     formType = "None"
 
+    loginPage = "None"
     isLogin = False
     myUsername = "None"
     myPassword = "None"
@@ -56,13 +57,14 @@ def main(argv):
     myForms = {}
 
     try:
-        opts, args = getopt.getopt(argv, "u:p:d:", ["login", "domain=", "attack="])
+        opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "attack="])
     except getopt.GetoptError:
-        print "(optional)\n--login followed by \n -u <username> -p <password> "
+        print "(optional)\n--login=<login URL> followed by\n -u <username> -p <password> "
         exit()
 
     for opt, arg in opts:
         if opt == "--login":
+            loginPage = arg
             isLogin = True
         elif opt == "-u":
             myUsername = arg
@@ -75,17 +77,11 @@ def main(argv):
 
     if isLogin:
         myHtmlGetter.setCredentials(myUsername, myPassword)
-        #scrapePage(myDomainName)
-        myHtmlGetter.login(myDomainName)
+        myHtmlGetter.login(loginPage)
         myHtmlGetter.getHTML(myDomainName)
 
-    #scrapePage(attackURL)
-    #print formType
-    #print myForms
-    #myHtmlGetter.getForms(attackURL)
-    #myHtmlGetter.mechforms(attackURL)
-    myHtmlGetter.mechforms2(attackURL)
-    #myHtmlGetter.getForm(attackURL)
+
+    myHtmlGetter.mechforms(attackURL)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

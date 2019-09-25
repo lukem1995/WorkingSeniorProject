@@ -6,13 +6,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<title>Damn Vulnerable Web App (DVWA) v1.0.7 :: Vulnerability: SQL Injection</title>
+		<title>Damn Vulnerable Web App (DVWA) v1.8 :: Welcome</title>
 
-		<link rel="stylesheet" type="text/css" href="../../dvwa/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="dvwa/css/main.css" />
 
-		<link rel="icon" type="\image/ico" href="../../favicon.ico" />
+		<link rel="icon" type="\image/ico" href="favicon.ico" />
 
-		<script type="text/javascript" src="../../dvwa/js/dvwaPage.js"></script>
+		<script type="text/javascript" src="dvwa/js/dvwaPage.js"></script>
 
 	</head>
 
@@ -21,14 +21,14 @@
 
 			<div id="header">
 
-				<img src="../../dvwa/images/logo.png" alt="Damn Vulnerable Web App" />
+				<img src="dvwa/images/logo.png" alt="Damn Vulnerable Web App" />
 
 			</div>
 
 			<div id="main_menu">
 
 				<div id="main_menu_padded">
-				<ul><li onclick="window.location='../../.'" class=""><a href="../../.">Home</a></li><li onclick="window.location='../../instructions.php'" class=""><a href="../../instructions.php">Instructions</a></li><li onclick="window.location='../../setup.php'" class=""><a href="../../setup.php">Setup</a></li></ul><ul><li onclick="window.location='../../vulnerabilities/brute/.'" class=""><a href="../../vulnerabilities/brute/.">Brute Force</a></li><li onclick="window.location='../../vulnerabilities/exec/.'" class=""><a href="../../vulnerabilities/exec/.">Command Execution</a></li><li onclick="window.location='../../vulnerabilities/csrf/.'" class=""><a href="../../vulnerabilities/csrf/.">CSRF</a></li><li onclick="window.location='../../vulnerabilities/fi/.?page=include.php'" class=""><a href="../../vulnerabilities/fi/.?page=include.php">File Inclusion</a></li><li onclick="window.location='../../vulnerabilities/sqli/.'" class="selected"><a href="../../vulnerabilities/sqli/.">SQL Injection</a></li><li onclick="window.location='../../vulnerabilities/sqli_blind/.'" class=""><a href="../../vulnerabilities/sqli_blind/.">SQL Injection (Blind)</a></li><li onclick="window.location='../../vulnerabilities/upload/.'" class=""><a href="../../vulnerabilities/upload/.">Upload</a></li><li onclick="window.location='../../vulnerabilities/xss_r/.'" class=""><a href="../../vulnerabilities/xss_r/.">XSS reflected</a></li><li onclick="window.location='../../vulnerabilities/xss_s/.'" class=""><a href="../../vulnerabilities/xss_s/.">XSS stored</a></li></ul><ul><li onclick="window.location='../../security.php'" class=""><a href="../../security.php">DVWA Security</a></li><li onclick="window.location='../../phpinfo.php'" class=""><a href="../../phpinfo.php">PHP Info</a></li><li onclick="window.location='../../about.php'" class=""><a href="../../about.php">About</a></li></ul><ul><li onclick="window.location='../../logout.php'" class=""><a href="../../logout.php">Logout</a></li></ul>
+				<ul><li onclick="window.location='.'" class="selected"><a href=".">Home</a></li><li onclick="window.location='instructions.php'" class=""><a href="instructions.php">Instructions</a></li><li onclick="window.location='setup.php'" class=""><a href="setup.php">Setup</a></li></ul><ul><li onclick="window.location='vulnerabilities/brute/.'" class=""><a href="vulnerabilities/brute/.">Brute Force</a></li><li onclick="window.location='vulnerabilities/exec/.'" class=""><a href="vulnerabilities/exec/.">Command Execution</a></li><li onclick="window.location='vulnerabilities/csrf/.'" class=""><a href="vulnerabilities/csrf/.">CSRF</a></li><li onclick="window.location='vulnerabilities/captcha/.'" class=""><a href="vulnerabilities/captcha/.">Insecure CAPTCHA</a></li><li onclick="window.location='vulnerabilities/fi/.?page=include.php'" class=""><a href="vulnerabilities/fi/.?page=include.php">File Inclusion</a></li><li onclick="window.location='vulnerabilities/sqli/.'" class=""><a href="vulnerabilities/sqli/.">SQL Injection</a></li><li onclick="window.location='vulnerabilities/sqli_blind/.'" class=""><a href="vulnerabilities/sqli_blind/.">SQL Injection (Blind)</a></li><li onclick="window.location='vulnerabilities/upload/.'" class=""><a href="vulnerabilities/upload/.">Upload</a></li><li onclick="window.location='vulnerabilities/xss_r/.'" class=""><a href="vulnerabilities/xss_r/.">XSS reflected</a></li><li onclick="window.location='vulnerabilities/xss_s/.'" class=""><a href="vulnerabilities/xss_s/.">XSS stored</a></li></ul><ul><li onclick="window.location='security.php'" class=""><a href="security.php">DVWA Security</a></li><li onclick="window.location='phpinfo.php'" class=""><a href="phpinfo.php">PHP Info</a></li><li onclick="window.location='about.php'" class=""><a href="about.php">About</a></li></ul><ul><li onclick="window.location='logout.php'" class=""><a href="logout.php">Logout</a></li></ul>
 				</div>
 
 			</div>
@@ -36,32 +36,25 @@
 			<div id="main_body">
 
 				
+
 <div class="body_padded">
-	<h1>Vulnerability: SQL Injection</h1>
 
-	
+	<h1>Welcome to Damn Vulnerable Web App!</h1>
 
-	<div class="vulnerable_code_area">
+	<p>Damn Vulnerable Web App (DVWA) is a PHP/MySQL web application that is damn vulnerable. Its main goals are to be an aid for security professionals to test their skills and tools in a legal environment, help web developers better understand the processes of securing web applications and aid teachers/students to teach/learn web application security in a class room environment.</p>
 
-		<h3>User ID:</h3>
+		<h2> WARNING! </h2>
 
-		<form action="#" method="GET">
-			<input type="text" name="id">
-			<input type="submit" name="Submit" value="Submit">
-		</form>
+		<p>Damn Vulnerable Web App is damn vulnerable! Do not upload it to your hosting provider's public html folder or any internet facing web server as it will be compromised. We recommend downloading and installing <a href="http://hiderefer.com/?http://www.apachefriends.org/en/xampp.html" target="_blank">XAMPP</a> onto a local machine inside your LAN which is used solely for testing.</p>
 
-		
+	<h2>Disclaimer</h2>
 
-	</div>
+	<p>We do not take responsibility for the way in which any one uses this application. We have made the purposes of the application clear and it should not be used maliciously. We have given warnings and taken measures to prevent users from installing DVWA on to live web servers. If your web server is compromised via an installation of DVWA it is not our responsibility it is the responsibility of the person/s who uploaded and installed it.</p>
 
-	<h2>More info</h2>
-	<ul>
-		<li><a href="http://hiderefer.com/?http://www.securiteam.com/securityreviews/5DP0N1P76E.html" target="_blank">http://www.securiteam.com/securityreviews/5DP0N1P76E.html</a></li>
-		<li><a href="http://hiderefer.com/?http://en.wikipedia.org/wiki/SQL_injection" target="_blank">http://en.wikipedia.org/wiki/SQL_injection</a></li>
-		<li><a href="http://hiderefer.com/?http://www.unixwiz.net/techtips/sql-injection.html" target="_blank">http://www.unixwiz.net/techtips/sql-injection.html</a></li>
-	</ul>
+	<h2>General Instructions</h2>
+
+	<p>The help button allows you to view hits/tips for each vulnerability and for each security level on their respective page.</p>
 </div>
-
 				<br />
 				<br />
 				
@@ -72,12 +65,12 @@
 			</div>
 
 			<div id="system_info">
-				<input type="button" value="View Help" class="popup_button" onClick="javascript:popUp( '../../vulnerabilities/view_help.php?id=sqli&security=high' )"> <input type="button" value="View Source" class="popup_button" onClick="javascript:popUp( '../../vulnerabilities/view_source.php?id=sqli&security=high' )"> <div align="left"><b>Username:</b> admin<br /><b>Security Level:</b> high<br /><b>PHPIDS:</b> disabled</div>
+				<div align="left"><b>Username:</b> admin<br /><b>Security Level:</b> low<br /><b>PHPIDS:</b> disabled</div>
 			</div>
 
 			<div id="footer">
 
-				<p>Damn Vulnerable Web Application (DVWA) v1.0.7</p>
+				<p>Damn Vulnerable Web Application (DVWA) v1.8</p>
 
 			</div>
 

