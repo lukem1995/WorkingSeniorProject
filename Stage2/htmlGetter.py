@@ -29,6 +29,9 @@ class HTMLGetter():
 			self.browser["password"] = self.password
 			self.browser.submit()
 			pageAfter = self.browser.open(self.domain)
+			with open("loginHTML.html","w+") as loginHTML:
+				loginHTML.write(pageAfter.read())
+				loginHTML.close()
 			if pageBefore == pageAfter:
 				print "Login failed 1. Try again"
 				exit()
@@ -49,3 +52,32 @@ class HTMLGetter():
 		#time.sleep(5)
 	def getFileName(self):
 		return self.fileName
+
+	def formSub(self, url):
+		try:
+			self.browser.open(url)
+			count = 0
+			for form in self.browser.forms():
+				print "working on " + str(url)
+				#print "Form ", count + 1
+				self.browser.form = list(self.browser.forms())[count]
+				for control in self.browser.form.controls:
+					if control.type == "submit":
+						control.disabled = True
+				for control in self.browser.form.controls:
+					inputname = str(control.name)
+					self.browser.select_form(nr=count)
+					if not control.disabled:
+						self.browser[inputname] = "1"
+				self.browser.submit()
+				fullUrl = self.browser.geturl()
+				fullUrl = fullUrl + "&Submit=Submit"
+				print fullUrl
+				#response = self.browser.open(fullUrl)
+				#with open("attack_response.html", "w+") as htmlFile:
+				#	htmlFile.write(response.read())
+				#	htmlFile.close()
+				count = count + 1
+		except:
+			print "Form failed"
+			exit()

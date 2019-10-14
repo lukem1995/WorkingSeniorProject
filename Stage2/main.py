@@ -214,7 +214,14 @@ def checkLinks(myLinks):
 	print "End validation"
 	return goodLinks
 
-# Main
+def submitForms(myLinks):
+	count = 0
+	for i in myLinks:
+		myHtmlGetter.formSub(myLinks[count])
+		count = count + 1
+
+
+	# Main
 def main(argv):
 	global myBrowser
 	myBrowser = Browser()
@@ -240,8 +247,8 @@ def main(argv):
 	shortDomain = "None"
 	sitemapBool = None
 	matchedDomains = []
-	validLinks = []
 	links = []
+	validLinks = []
 
 	try:
 		opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "dvwa"])
@@ -275,6 +282,8 @@ def main(argv):
 	#matchedDomains = isDomain(links,myDomainName)
     	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
+
+	submitForms(validLinks)
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
