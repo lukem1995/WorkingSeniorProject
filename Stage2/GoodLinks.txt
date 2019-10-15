@@ -15,9 +15,10 @@ http://192.168.56.102/dvwa/vulnerabilities/brute/.
 http://192.168.56.102/dvwa/about.php
 http://192.168.56.102/dvwa/vulnerabilities/xss_s/.
 http://192.168.56.102/dvwa/?doc=changelog
+http://192.168.56.102/dvwa/?phpids=on
+http://192.168.56.102/dvwa/?test=%22><script>eval(window.name)</script>
 http://192.168.56.102/dvwa/?doc=copying
+http://192.168.56.102/dvwa/instructions.php?doc=PHPIDS-license
 http://192.168.56.102/dvwa/ids_log.php
 http://192.168.56.102/dvwa/?doc=PHPIDS-license
-http://192.168.56.102/dvwa/?phpids=on
 http://192.168.56.102/dvwa/?doc=readme
-http://192.168.56.102/dvwa/?test=%22><script>eval(window.name)</script>

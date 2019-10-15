@@ -42,15 +42,16 @@ class HTMLGetter():
 
 	def getHTML(self, url):
 		self.domain = url
-		try:
-			html = self.browser.open(url)
-			print self.browser.geturl()
-			with open(self.fileName,"w+") as htmlFile:
-				htmlFile.write(html.read())
-				htmlFile.close()
-		except:
-			None
-		#time.sleep(5)
+		if "logout" not in str(url):
+			try:
+				html = self.browser.open(url)
+				print self.browser.geturl()
+				with open(self.fileName,"w+") as htmlFile:
+					htmlFile.write(html.read())
+					htmlFile.close()
+			except:
+				None
+			#time.sleep(5)
 	def getFileName(self):
 		return self.fileName
 
@@ -61,7 +62,7 @@ class HTMLGetter():
 		for i in payload:
 			try:
 				self.browser.open(url)
-				print self.browser.geturl()
+				#print self.browser.geturl()
 				count = 0
 				for form in self.browser.forms():
 					#print "Form ", count + 1
@@ -85,5 +86,4 @@ class HTMLGetter():
 					count = count + 1
 			except:
 				print "Form failed"
-				exit()
 			pcount = pcount + 1

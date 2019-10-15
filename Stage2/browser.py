@@ -107,7 +107,7 @@ class Browser():
 	
 	def checkLink(self,url):
 		# print url
-		if not "logout" in str(url):
+		if "logout" not in str(url):
 			try:
 				# print url
 				self.browser.open(url, timeout=4)

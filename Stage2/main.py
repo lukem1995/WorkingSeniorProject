@@ -284,18 +284,21 @@ def main(argv):
 	#matchedDomains = isDomain(links,myDomainName)
     	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
-
+	count = 0
+	for i in validLinks:
+		print validLinks[count]
+		count = count + 1
 	#if isLogin:
 		#print myUsername, " ,", myPassword
 	#	myHtmlGetter.setCredentials(myUsername, myPassword)
 	#	myHtmlGetter.login(loginPage)
 
-	#count = 0
-	#for i in validLinks:
-	#	myHtmlGetter.formSub(validLinks[count])
-	#	count = count + 1
-	
-	myHtmlGetter.formSub("http://192.168.56.102/dvwa/vulnerabilities/sqli/")
+	count = 0
+	for i in validLinks:
+		myHtmlGetter.formSub(str(validLinks[count]))
+		count = count + 1
+
+	#myHtmlGetter.formSub("http://192.168.56.102/dvwa/vulnerabilities/captcha")
 
 	#submitForms(validLinks)
 
