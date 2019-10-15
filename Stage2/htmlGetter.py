@@ -55,8 +55,48 @@ class HTMLGetter():
 	def getFileName(self):
 		return self.fileName
 
-	def formSub(self, url):
-		payload = ["1","2","3"]
+	def xss(self, url, myPayload):
+		payload = myPayload
+		vulnerable = False
+		#print "working on " + str(url)
+		pcount = 0
+		for i in payload:
+			try:
+				self.browser.open(url)
+				# print self.browser.geturl()
+				count = 0
+				for form in self.browser.forms():
+					# print "Form ", count + 1
+					self.browser.form = list(self.browser.forms())[count]
+					for control in self.browser.form.controls:
+						if control.type == "submit":
+							control.disabled = True
+					for control in self.browser.form.controls:
+						inputname = str(control.name)
+						self.browser.select_form(nr=count)
+						if not control.disabled:
+							self.browser[inputname] = str(payload[pcount])
+					self.browser.submit()
+					fullUrl = self.browser.geturl()
+					#fullUrl = fullUrl + "&Submit=Submit"
+					#print fullUrl
+					response = self.browser.open(fullUrl)
+					if str(payload[pcount]) in str(response.read()):
+						vulnerable = True
+					else:
+						vulnerable = False
+					# with open("attack_response.html", "w+") as htmlFile:
+					#	htmlFile.write(response.read())
+					#	htmlFile.close()
+					count = count + 1
+			except:
+				#print "Form failed"
+				None
+			pcount = pcount + 1
+		return vulnerable
+
+	def formSub(self, url, myPayload):
+		payload = myPayload
 		print "working on " + str(url)
 		pcount = 0
 		for i in payload:
