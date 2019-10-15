@@ -12,7 +12,6 @@ http://192.168.56.102/dvwa/.
 http://192.168.56.102/dvwa/setup.php
 http://192.168.56.102/dvwa/vulnerabilities/sqli/.
 http://192.168.56.102/dvwa/vulnerabilities/brute/.
-http://192.168.56.102/dvwa/logout.php
 http://192.168.56.102/dvwa/about.php
 http://192.168.56.102/dvwa/vulnerabilities/xss_s/.
 http://192.168.56.102/dvwa/?doc=changelog

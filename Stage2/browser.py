@@ -41,9 +41,9 @@ class Browser():
 		self.password = password
 
 	# Log into site
-	def login(self):
+	def login(self, url):
 		try:
-			pageBefore = self.browser.open(self.fullDomain)
+			pageBefore = self.browser.open(url)
 			self.browser.select_form(nr=0)
 			self.browser["username"] = self.username
 			self.browser["password"] = self.password
@@ -107,9 +107,11 @@ class Browser():
 	
 	def checkLink(self,url):
 		# print url
-		try:
-			# print url
-			self.browser.open(url, timeout=4)
-			return True
-		except:
-			return False
+		if not "logout" in str(url):
+			try:
+				# print url
+				self.browser.open(url, timeout=4)
+				print self.browser.geturl()
+				return True
+			except:
+				return False

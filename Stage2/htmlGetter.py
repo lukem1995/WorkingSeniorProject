@@ -44,6 +44,7 @@ class HTMLGetter():
 		self.domain = url
 		try:
 			html = self.browser.open(url)
+			print self.browser.geturl()
 			with open(self.fileName,"w+") as htmlFile:
 				htmlFile.write(html.read())
 				htmlFile.close()
@@ -60,6 +61,7 @@ class HTMLGetter():
 		for i in payload:
 			try:
 				self.browser.open(url)
+				print self.browser.geturl()
 				count = 0
 				for form in self.browser.forms():
 					#print "Form ", count + 1

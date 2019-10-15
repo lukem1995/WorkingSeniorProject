@@ -272,6 +272,8 @@ def main(argv):
 		myDomainName, shortDomain = start()
 		myHtmlGetter.login(loginPage)
 		myHtmlGetter.getHTML(myDomainName)
+		myBrowser.setCredentials(myUsername, myPassword)
+		myBrowser.login(loginPage)
 	else:
 		myDomainName, shortDomain = start()
 
@@ -283,15 +285,17 @@ def main(argv):
     	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
 
-	if isLogin:
+	#if isLogin:
 		#print myUsername, " ,", myPassword
 	#	myHtmlGetter.setCredentials(myUsername, myPassword)
-		myHtmlGetter.login(loginPage)
+	#	myHtmlGetter.login(loginPage)
 
-	count = 0
-	for i in validLinks:
-		myHtmlGetter.formSub(validLinks[count])
-		count = count + 1
+	#count = 0
+	#for i in validLinks:
+	#	myHtmlGetter.formSub(validLinks[count])
+	#	count = count + 1
+	
+	myHtmlGetter.formSub("http://192.168.56.102/dvwa/vulnerabilities/sqli/")
 
 	#submitForms(validLinks)
 
