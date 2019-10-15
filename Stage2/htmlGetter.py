@@ -83,8 +83,6 @@ class HTMLGetter():
 					response = self.browser.open(fullUrl)
 					if str(payload[pcount]) in str(response.read()):
 						vulnerable = True
-					else:
-						vulnerable = False
 					# with open("attack_response.html", "w+") as htmlFile:
 					#	htmlFile.write(response.read())
 					#	htmlFile.close()
