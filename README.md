@@ -28,3 +28,5 @@ Stage2 contains scripts to determine if pages of a domain are vulnerable to SQL 
 		   Prints each url and whether it was reached, also prints progress
 			6a. If reachable, add url to list of valid links and add to text file with valid links 
 			6b. If not reachable print "url" is bad, and do nothing with it
+		7. Dynamically finds forms and submits payloads for XSS detection
+		8. Prints list of XSS vulnerable pages
