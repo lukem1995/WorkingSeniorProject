@@ -215,11 +215,11 @@ def checkLinks(myLinks):
 	return goodLinks
 
 def submitForms(myLinks):
+	global myHtmlGetter
 	count = 0
 	for i in myLinks:
 		myHtmlGetter.formSub(myLinks[count])
 		count = count + 1
-
 
 	# Main
 def main(argv):
@@ -283,7 +283,17 @@ def main(argv):
     	#matchedDomains = rmDup(matchedDomains)
 	validLinks = checkLinks(recursiveLinks)
 
-	submitForms(validLinks)
+	if isLogin:
+		#print myUsername, " ,", myPassword
+	#	myHtmlGetter.setCredentials(myUsername, myPassword)
+		myHtmlGetter.login(loginPage)
+
+	count = 0
+	for i in validLinks:
+		myHtmlGetter.formSub(validLinks[count])
+		count = count + 1
+
+	#submitForms(validLinks)
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
