@@ -1,7 +1,7 @@
 import time
 import sys
 reload(sys)
-sys.setdefaultencoding("utf8")
+#ys.setdefaultencoding("utf8")
 import getopt
 from browser import Browser
 from xmlParser import XmlParser
@@ -238,7 +238,21 @@ def xssCheck(myLinks):
 			#print str(myLinks[count]) + " is vulnerable to XSS"
 		count = count +1
 	return myList
-	# Main
+
+def sqlCheck(myLinks):
+	myPayload = ["id=1' AND (SELECT 5654 FROM(SELECT COUNT(*),CONCAT(0x716a6a7671,(SELECT (ELT(5654=5654,1))),"
+				 "0x7162787a71,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.PLUGINS GROUP BY x)a)"]
+	myList = []
+	global myHtmlGetter
+	count = 0
+	for i in myLinks:
+		repsonse = myHtmlGetter.sql(myLinks[count], myPayload)
+		if repsonse:
+			myList.append(myLinks[count])
+		count = count + 1
+	return myList
+
+# Main
 def main(argv):
 	global myBrowser
 	myBrowser = Browser()
@@ -267,6 +281,7 @@ def main(argv):
 	links = []
 	validLinks = []
 	xssVulnList = []
+	sqlVulnList = []
 
 	try:
 		opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "dvwa"])
@@ -321,10 +336,19 @@ def main(argv):
 	#submitForms(validLinks)
 
 	xssVulnList = xssCheck(validLinks)
+
+	sqlVulnList = sqlCheck(validLinks)
+
 	count = 0
 	print "The following links are vulnerable to Reflective Cross Site Scripting"
 	for i in xssVulnList:
 		print xssVulnList[count]
+		count = count + 1
+
+	count = 0
+	print "The following links are vulnerable to Reflective SQL Injection"
+	for i in sqlVulnList:
+		print sqlVulnList[count]
 		count = count + 1
 
 if __name__ == "__main__":

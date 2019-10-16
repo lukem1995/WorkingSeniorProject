@@ -58,7 +58,7 @@ class HTMLGetter():
 	def xss(self, url, myPayload):
 		payload = myPayload
 		vulnerable = False
-		#print "working on " + str(url)
+		print "working on " + str(url)
 		pcount = 0
 		for i in payload:
 			try:
@@ -93,8 +93,9 @@ class HTMLGetter():
 			pcount = pcount + 1
 		return vulnerable
 
-	def formSub(self, url, myPayload):
+	def sql(self, url, myPayload):
 		payload = myPayload
+		vulnerable = False
 		print "working on " + str(url)
 		pcount = 0
 		for i in payload:
@@ -116,7 +117,12 @@ class HTMLGetter():
 					self.browser.submit()
 					fullUrl = self.browser.geturl()
 					fullUrl = fullUrl + "&Submit=Submit"
-					print fullUrl
+					response = self.browser.open(fullUrl)
+					#print str(fullUrl)
+					#print str(response.read())
+					if "SQL syntax" in str(response.read()):
+						vulnerable = True
+					#print fullUrl
 					#response = self.browser.open(fullUrl)
 					#with open("attack_response.html", "w+") as htmlFile:
 					#	htmlFile.write(response.read())
@@ -125,3 +131,4 @@ class HTMLGetter():
 			except:
 				print "Form failed"
 			pcount = pcount + 1
+		return vulnerable
