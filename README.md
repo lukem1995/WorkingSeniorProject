@@ -30,3 +30,5 @@ Stage2 contains scripts to determine if pages of a domain are vulnerable to SQL 
 			6b. If not reachable print "url" is bad, and do nothing with it
 		7. Dynamically finds forms and submits payloads for XSS detection
 		8. Prints list of XSS vulnerable pages
+		9. Dynamically finds forms and submits payloads for SQL injection detection
+		10. Prints list of SQLI vulnerable pages
