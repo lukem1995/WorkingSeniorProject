@@ -191,8 +191,9 @@ def rmDup(myList):
 	return myList
 
 # Attempts to reach the links in the links list and adds them to a list of good links if they're reachable
-def checkLinks(myLinks):
+def checkLinks(myLinks, timer):
 	print "Begin validation"
+	print timer
 	global myBrowser
 	count = 0
 	goodLinks = []
@@ -210,7 +211,7 @@ def checkLinks(myLinks):
 			print str(i) + " is bad"
 			print str(count + 1) + "/" + str(len(myLinks))
 		count = count + 1
-		#time.sleep(2)
+		time.sleep(timer)
 	print "End validation"
 	return goodLinks
 
@@ -282,11 +283,12 @@ def main(argv):
 	validLinks = []
 	xssVulnList = []
 	sqlVulnList = []
+	sleepTimer = 0
 
 	try:
-		opts, args = getopt.getopt(argv, "u:p:d:", ["login=", "domain=", "dvwa"])
+		opts, args = getopt.getopt(argv, "u:p:d:s:", ["login=", "domain=", "dvwa"])
 	except getopt.GetoptError:
-		print "(optional)\n--login followed by \n -u <username> -p <password> "
+		print "(optional)\n--login followed by \n -u <username> -p <password> \n --dvwa"
 		exit()
 
 	for opt, arg in opts:
@@ -299,6 +301,8 @@ def main(argv):
 			myPassword = arg
 		elif opt == "--dvwa":
 			isDVWA = True
+		elif opt =="-s":
+			sleepTimer = float(arg)
 
 	if isLogin:
 		myHtmlGetter.setCredentials(myUsername, myPassword)
@@ -316,7 +320,7 @@ def main(argv):
 	#cleanLinks(recursiveLinks,myDomainName)
 	#matchedDomains = isDomain(links,myDomainName)
     	#matchedDomains = rmDup(matchedDomains)
-	validLinks = checkLinks(recursiveLinks)
+	validLinks = checkLinks(recursiveLinks, sleepTimer)
 	#count = 0
 	#for i in validLinks:
 	#	print validLinks[count]

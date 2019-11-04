@@ -40,6 +40,32 @@ class Browser():
 		self.username = username
 		self.password = password
 
+	def login2(self,url):
+		try:
+			count = 0
+			count2 = 0
+			self.browser.open(url)
+			for form in self.browser.forms():
+				self.browser.form = list(self.browser.forms())[count]
+				for control in self.browser.form.controls:
+					if control.type == "submit":
+						control.disabled = True
+				for control in self.browser.form.controls:
+					inputname = str(control.name)
+					self.browser.select_form(nr=count)
+					if not control.disabled:
+						if count2 == 0:
+							self.browser[inputname] = self.username
+						elif count2 == 1:
+							self.browser[inputname] = self.password
+						count2 = count2 + 1
+				self.browser.submit()
+				count = count + 1
+				print "Login successful"
+		except:
+			print "Login failed"
+			exit()
+
 	# Log into site
 	def login(self, url):
 		try:
